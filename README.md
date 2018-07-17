@@ -6,35 +6,10 @@
 
 
 ## Usage
-After you [installed](#installation) the package you can customize the thresholds publish configuration by calling:
 
-```
-$ php artisan vendor:publish --provider="Sofa\DbQueriesAlert\ServiceProvider"
-```
+Add `EloquentTestsuite` trait to your PHPUnit Test:
 
-and edit it in `config/db_queries_alert.php`:
-```php
-return [
-    'error' => 100,
-    'warning' => 50,
-    'info' => 20,
-];
-```
-
-
-Now you're good to go. The package will call `Log::error` (or `warning|info`) whenever your app hits given threshold. Catch this error in the monitoring service you're using for the application (or simply check your local `storage/logs/laravel[-YYYY-MM-DD].log` file).
-
-
-## Installation
-
-1. Add package to your project:
-    ```
-    path/to/your/app$ composer require sofa/eloquent-testsuite
-    ```
-
-2. Add `EloquentTestsuite` trait to your PHPUnit Test:
     ```php
-    // app/Http/Kernel.php
     class SomeModelTest extends \PHPUnit\Framework\TestCase
     {
         use EloquentSuite;
@@ -60,6 +35,14 @@ Now you're good to go. The package will call `Log::error` (or `warning|info`) wh
     }
     ```
 
+
+## Installation
+
+Add package to your project:
+
+    ```
+    path/to/your/app$ composer require sofa/eloquent-testsuite
+    ```
 
 #### Contribution
 
