@@ -48,11 +48,11 @@ trait EloquentSuite
      *
      * @param  string $model        Classname of the model under test
      * @param  string $relation     Relation method (belongsTo, hasMany etc)
-     * @param  string $related      Classname of the related model
+     * @param  string|null $related Classname of the related model
      * @param  ...string $params    Optional params for the relation
      * @return \PHPUnit\Framework\MockObject\MockObject[]
      */
-    public function createRelationMock(string $model, string $relation, string $related, ...$params) : MockObject
+    public function createRelationMock(string $model, string $relation, string $related = null, ...$params) : MockObject
     {
         return $this->createRelationChainMock($model, $relation, $related, ...$params)[0];
     }
@@ -82,11 +82,11 @@ trait EloquentSuite
      *
      * @param  string $model        Classname of the model under test
      * @param  string $relation     Relation method (belongsTo, hasMany etc)
-     * @param  string $related      Classname of the related model
+     * @param  string|null $related Classname of the related model
      * @param  ...string $params    Optional params for the relation
      * @return [\PHPUnit\Framework\MockObject\MockObject, \Mockery\MockInterface]
      */
-    public function createRelationChainMock(string $model, string $relation, string $related, ...$params) : array
+    public function createRelationChainMock(string $model, string $relation, string $related = null, ...$params) : array
     {
         if (!array_key_exists($relation, self::$eloquent_relations)) {
             $this->fail('Unknown relation provided: ' . $relation);
