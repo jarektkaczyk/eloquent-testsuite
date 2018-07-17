@@ -1,0 +1,40 @@
+{
+    "name": "sofa/eloquent-testsuite",
+    "description": "Helpers for fast and reliable UNIT tests for your Eloquent Models with PHPUnit",
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/jarektkaczyk/eloquent-testsuite/issues",
+        "source": "https://github.com/jarektkaczyk/eloquent-testsuite"
+    },
+    "keywords": [
+        "laravel",
+        "database",
+        "eloquent",
+        "unittest",
+        "unit",
+        "test",
+        "testing",
+        "unittesting"
+    ],
+    "authors": [
+        {
+            "name": "Jarek Tkaczyk",
+            "email": "jarek@softonsofa.com",
+            "homepage": "https://softonsofa.com/",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.1.0"
+    },
+    "require-dev": {
+        "illuminate/database": "^5.4",
+        "mockery/mockery" : "0.9.*|^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sofa\\EloquentTestsuite\\": "src"
+        }
+    },
+    "minimum-stability": "stable"
+}
