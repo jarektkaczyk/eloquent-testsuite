@@ -94,8 +94,9 @@ You can unit test this definition using the following syntax:
 ```php 
     public function testScopeValidOnDate()
     {
-        $assertion = $this->stringContains('valid_from'), ['2020-10-10'];
-        $query = $this->createQueryMock('whereRaw', $assertion);
+        $assertion = $this->stringContains('valid_from');
+        $params = ['2020-10-10'];
+        $query = $this->createQueryMock('whereRaw', $assertion, $params);
         $ticket = new Ticket();
         $ticket->scopeValidOnDate($query, '2020-10-10');
     }
