@@ -8,6 +8,7 @@ use Mockery;
 use Illuminate\Database\Eloquent\Relations;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 use RuntimeException;
 
 /**
@@ -226,13 +227,27 @@ trait EloquentSuite
         }
         $parameters = array_filter([$column, $values]);
         $test = new static();
-        $query = $test->createMock(Builder::class);
+        $query = $test->createQueryMock($filterMethod, ...$parameters);
+        $scopeMethod = 'scope' . ucfirst($scope);
+        $model->$scopeMethod($query);
+    }
+
+    /**
+     * @param string $filterMethod
+     * @param mixed ...$parameters
+     * @return Builder
+     * @throws \PHPUnit\Framework\Exception
+     * @throws \PHPUnit\Framework\MockObject\RuntimeException
+     * @throws ReflectionException
+     */
+    public function createQueryMock(string $filterMethod, ...$parameters): Builder
+    {
+        $query = $this->createMock(Builder::class);
         $query->expects(self::once())
             ->method($filterMethod)
             ->with(...$parameters)
             ->willReturnSelf();
 
-        $scopeMethod = 'scope' . ucfirst($scope);
-        $model->$scopeMethod($query);
+        return $query;
     }
 }
