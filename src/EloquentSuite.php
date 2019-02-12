@@ -2,10 +2,18 @@
 
 namespace Sofa\EloquentTestsuite;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 use Mockery;
 use Illuminate\Database\Eloquent\Relations;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
+/**
+ * Trait EloquentSuite
+ * @mixin TestCase
+ */
 trait EloquentSuite
 {
     protected static $eloquent_relations = [
@@ -143,5 +151,88 @@ trait EloquentSuite
                         ' unexpected query methods chained on relation object,' .
                         ' missing return statement.'
         );
+    }
+
+    /**
+     * @param Model $model
+     * @param string $scope
+     * @param string $column
+     * @param string $value
+     * @throws RuntimeException
+     */
+    public static function assertScopeFilters(Model $model, string $scope, string $column, string $value): void
+    {
+        self::runScopeAssertion($model, $scope, 'where', $column, $value);
+    }
+
+    /**
+     * @param Model $model
+     * @param string $scope
+     * @param string $column
+     * @throws RuntimeException
+     */
+    public static function assertScopeFiltersNull(Model $model, string $scope, string $column): void
+    {
+        self::runScopeAssertion($model, $scope, 'whereNull', $column, null);
+    }
+
+    /**
+     * @param Model $model
+     * @param string $scope
+     * @param string $column
+     * @throws RuntimeException
+     */
+    public static function assertScopeFiltersNotNull(Model $model, string $scope, string $column): void
+    {
+        self::runScopeAssertion($model, $scope, 'whereNotNull', $column, null);
+    }
+
+    /**
+     * @param Model $model
+     * @param string $scope
+     * @param string $column
+     * @param array $values
+     * @throws RuntimeException
+     */
+    public static function assertScopeFiltersIn(Model $model, string $scope, string $column, array $values): void
+    {
+        self::runScopeAssertion($model, $scope, 'whereIn', $column, $values);
+    }
+
+    /**
+     * @param Model $model
+     * @param string $scope
+     * @param string $column
+     * @param array $values
+     * @throws RuntimeException
+     */
+    public static function assertScopeFiltersNotIn(Model $model, string $scope, string $column, array $values): void
+    {
+        self::runScopeAssertion($model, $scope, 'whereNotIn', $column, $values);
+    }
+
+    /**
+     * @param Model $model
+     * @param string $scope
+     * @param string $filterMethod
+     * @param string $column
+     * @param $values
+     * @throws RuntimeException
+     */
+    public static function runScopeAssertion(Model $model, string $scope, string $filterMethod, string $column, $values): void
+    {
+        if (!is_a(static::class, TestCase::class, true)) {
+            throw new RuntimeException('Calling class must be an instance of ' . TestCase::class);
+        }
+        $parameters = array_filter([$column, $values]);
+        $test = new static();
+        $query = $test->createMock(Builder::class);
+        $query->expects(self::once())
+            ->method($filterMethod)
+            ->with(...$parameters)
+            ->willReturnSelf();
+
+        $scopeMethod = 'scope' . ucfirst($scope);
+        $model->$scopeMethod($query);
     }
 }
