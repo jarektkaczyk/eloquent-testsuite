@@ -3,20 +3,21 @@
 namespace Sofa\EloquentTestsuite;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations;
 use Illuminate\Database\Query\Builder;
 use Mockery;
-use Illuminate\Database\Eloquent\Relations;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use RuntimeException;
 
 /**
- * Trait EloquentSuite
  * @mixin TestCase
  */
 trait EloquentSuite
 {
+    use MocksMixins;
+
     protected static $eloquent_relations = [
         'hasOne' => Relations\HasOne::class,
         'hasMany' => Relations\HasMany::class,
