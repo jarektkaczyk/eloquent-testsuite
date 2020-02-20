@@ -10,6 +10,7 @@ use PHPUnit\Framework\MockObject\Generator;
 use PHPUnit\Framework\MockObject\MockBuilder;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionFunction;
+use ReflectionNamedType;
 
 /**
  * This trait simplifies writing expectations against Eloquent models & queries by enabling
@@ -122,8 +123,9 @@ trait MocksMixins
         $ref = new ReflectionFunction($expectations);
 
         $expected_mock = $ref->getParameters()[0] ?? null;
+        $mock_type = $expected_mock ? $expected_mock->getType() : null;
 
-        return $expected_mock !== null && (string) $expected_mock->getType() === 'Mockery\\MockInterface'
+        return $mock_type instanceof ReflectionNamedType && is_a($mock_type->getName(), 'Mockery\\MockInterface')
             ? call_user_func('Mockery::mock')
             : $this->createMixinMock(EloquentBuilder::class, QueryBuilder::class);
     }
