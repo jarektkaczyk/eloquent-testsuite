@@ -28,6 +28,7 @@ trait EloquentSuite
         'morphToMany' => Relations\MorphToMany::class,
         'morphedByMany' => Relations\MorphToMany::class,
         'belongsToMany' => Relations\BelongsToMany::class,
+        'hasOneThrough' => Relations\HasOneThrough::class,
         'hasManyThrough' => Relations\HasManyThrough::class,
     ];
 
@@ -94,7 +95,7 @@ trait EloquentSuite
      * @param  string $relation     Relation method (belongsTo, hasMany etc)
      * @param  string|null $related Classname of the related model
      * @param  ...string $params    Optional params for the relation
-     * @return [\PHPUnit\Framework\MockObject\MockObject, \Mockery\MockInterface]
+     * @return \PHPUnit\Framework\MockObject\MockObject[]|\Mockery\MockInterface[]
      */
     public function createRelationChainMock(string $model, string $relation, string $related = null, ...$params) : array
     {
