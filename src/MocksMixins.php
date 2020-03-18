@@ -123,7 +123,7 @@ trait MocksMixins
 
         $expected_mock = $ref->getParameters()[0] ?? null;
 
-        return $expected_mock !== null && (string) $expected_mock->getType() === 'Mockery\\MockInterface'
+        return $expected_mock !== null && $expected_mock->getType()->getName() === 'Mockery\\MockInterface'
             ? call_user_func('Mockery::mock')
             : $this->createMixinMock(EloquentBuilder::class, QueryBuilder::class);
     }
