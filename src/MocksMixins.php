@@ -19,6 +19,13 @@ use ReflectionFunction;
  */
 trait MocksMixins
 {
+    /**
+     * Creates PHPUnit mock that mimics EloquentBuilder by allowing methods from QueryBuilder as well.
+     * By default PHPUnit mocks don't allow that, for EloquentBuilder is not extending QueryBuilder,
+     * and thus PHPUnit fails with error because the methods we try to mock or assert don't exist.
+     *
+     * @return MockObject|EloquentBuilder|QueryBuilder
+     */
     protected function mockEloquentBuilder(): MockObject
     {
         return $this->createMixinMock(EloquentBuilder::class, QueryBuilder::class);
