@@ -13,6 +13,7 @@ Add `EloquentTestsuite` trait to your PHPUnit Test:
 ### Testing Relations
 
 ```php
+<?php
 class SomeModelTest extends \PHPUnit\Framework\TestCase
 {
     use EloquentSuite;
@@ -46,6 +47,7 @@ exists on the model, and it performs the expected filtering on the model results
 The available assertion methods are:
 
 ```php
+<?php
 assertScopeFilters(Model $model, string $scope, string $column, string $value)
 assertScopeFiltersNull(Model $model, string $scope, string $column)
 assertScopeFiltersNotNull(Model $model, string $scope, string $column)
@@ -54,6 +56,7 @@ assertScopeFiltersNotIn(Model $model, string $scope, string $column, array $valu
 ```
 
 ```php
+<?php
 class SomeModelTest extends \PHPUnit\Framework\TestCase
 {
     use EloquentSuite;
@@ -83,6 +86,7 @@ and then do custom assertions on the method and parameters. For instance take
 this scope definition that does a raw where query.
 
 ```php
+<?php
     public function scopeValidOnDate($query, $date)
     {
         return $query->whereRaw('? between valid_from and valid_to', [$date]);
@@ -91,7 +95,8 @@ this scope definition that does a raw where query.
 
 You can unit test this definition using the following syntax:
 
-```php 
+```php
+<?php
     public function testScopeValidOnDate()
     {
         $assertion = $this->stringContains('valid_from');
