@@ -18,7 +18,7 @@ trait EloquentSuite
 {
     use MocksMixins;
 
-    protected static $eloquent_relations = [
+    protected static array $eloquent_relations = [
         'hasOne' => Relations\HasOne::class,
         'hasMany' => Relations\HasMany::class,
         'morphTo' => Relations\MorphTo::class,
@@ -133,10 +133,11 @@ trait EloquentSuite
      *
      * @param  string $relation
      * @param  \Illuminate\Database\Eloquent\Relations\Relation $actual
-     * @param  string $message
+     * @param string $message
+     *
      * @return void
      */
-    public static function assertRelation(string $relation, Relations\Relation $actual, $message = '')
+    public static function assertRelation(string $relation, Relations\Relation $actual, string $message = ''): void
     {
         if (array_key_exists($relation, self::$eloquent_relations)) {
             $relation = self::$eloquent_relations[$relation];
@@ -150,9 +151,9 @@ trait EloquentSuite
             $relation,
             $actual,
             $message ?: 'Possible reasons:' .
-                        ' relation not defined on the model,' .
-                        ' unexpected query methods chained on relation object,' .
-                        ' missing return statement.'
+                ' relation not defined on the model,' .
+                ' unexpected query methods chained on relation object,' .
+                ' missing return statement.'
         );
     }
 
