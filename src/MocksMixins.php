@@ -6,6 +6,8 @@ use Closure;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Mockery\MockInterface;
+use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Generator;
 use PHPUnit\Framework\MockObject\MockBuilder;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -42,14 +44,21 @@ trait MocksMixins
      */
     protected function createMixinMock(string $mocked_class, string ...$mixins): MockObject
     {
-        return $this->getMockBuilder($mocked_class)
+        $mockBuilder = $this->getMockBuilder($mocked_class)
             ->disableOriginalConstructor()
             ->disableOriginalClone()
             ->disableArgumentCloning()
-            ->allowMockingUnknownTypes()
-            ->setMethods($this->getMixinMockableMethods(array_merge([$mocked_class], $mixins)))
+            ->allowMockingUnknownTypes();
+
+        $mixinMockableMethods = $this->getMixinMockableMethods(array_merge([$mocked_class], $mixins));
+        $onlyExistMethods = array_intersect(get_class_methods($mocked_class), $mixinMockableMethods);
+        $otherMethods = array_diff($mixinMockableMethods, $onlyExistMethods);
+
+        return $mockBuilder->onlyMethods($onlyExistMethods)
+            ->addMethods($otherMethods)
             ->getMock();
     }
+
 
     protected function getMixinMockableMethods($classnames): array
     {
@@ -66,7 +75,7 @@ trait MocksMixins
         }, $classnames);
 
         return array_filter(array_unique(array_merge(...$methods)), function ($method) {
-            return substr($method, 0, 2) !== '__';
+            return !str_starts_with($method, '__');
         });
     }
 
@@ -99,10 +108,11 @@ trait MocksMixins
      * // act
      * $some_class->something($query);
      *
-     * @param  \PHPUnit\Framework\MockObject\MockObject|\Mockery\MockInterface $query
-     * @return \PHPUnit\Framework\Constraint\Callback|\Mockery\Matcher\Closure
+     * @param Closure $expectations
+     *
+     * @return Callback|\Mockery\Matcher\Closure
      */
-    protected function assertQueryCallback(Closure $expectations)
+    protected function assertQueryCallback(Closure $expectations): \Mockery\Matcher\Closure|Callback
     {
         $query = $this->buildExpectedQueryMock($expectations);
         call_user_func($expectations, $query);
@@ -122,9 +132,9 @@ trait MocksMixins
 
     /**
      * @param Closure $expectations
-     * @return \Mockery\MockInterface|MockObject
+     * @return MockInterface|MockObject
      */
-    protected function buildExpectedQueryMock(Closure $expectations)
+    protected function buildExpectedQueryMock(Closure $expectations): MockInterface|MockObject
     {
         $ref = new ReflectionFunction($expectations);
 
